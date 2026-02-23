@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript=false --tailwind --eslint --app --src-dir=false --import-alias=\"@/*\" --no-git)",
+      "Bash(node:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(pkill:*)",
+      "Bash(npm install:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm run build:*)",
+      "Bash(command -v:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm list:*)",
+      "Bash(brew list:*)",
+      "Bash(brew upgrade:*)",
+      "Bash(brew install:*)",
+      "Bash(export PATH=\"/opt/homebrew/opt/node@22/bin:$PATH\")",
+      "Bash(npm --version:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(/opt/homebrew/opt/node@22/bin/npm --version)",
+      "Bash(chmod:*)",
+      "Bash(lsof:*)",
+      "Bash(podman --version:*)",
+      "Bash(xargs kill:*)",
+      "Bash(pip3:*)",
+      "Bash(podman-compose:*)",
+      "Bash(curl:*)",
+      "Bash(podman exec:*)",
+      "Bash(podman tag:*)",
+      "Bash(podman images:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

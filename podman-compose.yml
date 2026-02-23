@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: share-my-itenary:latest
+    container_name: share-my-itenary
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local        # loads MONGODB_URI and GOOGLE_MAPS_API_KEY at runtime
+    restart: unless-stopped

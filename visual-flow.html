@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Share My Itinerary — Visual Flow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 48px;
+  }
+
+  /* ── Section headers ── */
+  .section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 16px;
+    padding-left: 4px;
+  }
+
+  /* ── Grid layouts ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .full { margin-bottom: 24px; }
+
+  /* ── Card base ── */
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .card.accent-blue  { border-color: #38bdf8; box-shadow: 0 0 20px rgba(56,189,248,.12); }
+  .card.accent-violet{ border-color: #818cf8; box-shadow: 0 0 20px rgba(129,140,248,.12); }
+  .card.accent-green { border-color: #4ade80; box-shadow: 0 0 20px rgba(74,222,128,.12); }
+  .card.accent-amber { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251,191,36,.12); }
+  .card.accent-rose  { border-color: #f87171; box-shadow: 0 0 20px rgba(248,113,113,.12); }
+
+  /* ── Card titles ── */
+  .card-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .card.accent-blue   .card-title { color: #38bdf8; }
+  .card.accent-violet .card-title { color: #818cf8; }
+  .card.accent-green  .card-title { color: #4ade80; }
+  .card.accent-amber  .card-title { color: #fbbf24; }
+  .card.accent-rose   .card-title { color: #f87171; }
+
+  /* ── Page blocks ── */
+  .page-block {
+    background: #0f172a;
+    border: 1px solid #475569;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .page-block:last-child { margin-bottom: 0; }
+  .page-block .page-path {
+    font-size: 0.7rem;
+    font-family: monospace;
+    color: #94a3b8;
+    margin-bottom: 6px;
+  }
+  .page-block .page-name {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+  }
+  .page-block ul {
+    list-style: none;
+    padding: 0;
+  }
+  .page-block ul li {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    padding: 2px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .page-block ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: #475569;
+  }
+
+  /* ── Flow diagram ── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+  }
+  .flow-node {
+    background: #0f172a;
+    border: 1.5px solid #475569;
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    min-width: 160px;
+    position: relative;
+  }
+  .flow-node.blue   { border-color: #38bdf8; color: #38bdf8; }
+  .flow-node.violet { border-color: #818cf8; color: #818cf8; }
+  .flow-node.green  { border-color: #4ade80; color: #4ade80; }
+  .flow-node.amber  { border-color: #fbbf24; color: #fbbf24; }
+  .flow-node small  { display: block; font-size: 0.68rem; font-weight: 400; color: #64748b; margin-top: 3px; }
+  .arrow {
+    color: #475569;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .arrow.down {
+    display: flex;
+    justify-content: center;
+    color: #475569;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 2px 0;
+  }
+  .arrow-label {
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 1px;
+  }
+
+  /* ── API endpoint table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  thead tr { background: #0f172a; }
+  thead th {
+    text-align: left;
+    padding: 10px 12px;
+    color: #64748b;
+    font-weight: 600;
+    border-bottom: 1px solid #334155;
+  }
+  tbody tr { border-bottom: 1px solid #1e293b; transition: background .15s; }
+  tbody tr:hover { background: #162032; }
+  tbody td { padding: 9px 12px; color: #94a3b8; vertical-align: top; }
+  .method {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .get    { background: rgba(74,222,128,.15); color: #4ade80; }
+  .post   { background: rgba(56,189,248,.15); color: #38bdf8; }
+  .put    { background: rgba(251,191,36,.15); color: #fbbf24; }
+  .delete { background: rgba(248,113,113,.15); color: #f87171; }
+  .route  { font-family: monospace; color: #e2e8f0; }
+  .desc   { color: #94a3b8; }
+
+  /* ── Schema blocks ── */
+  .schema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .schema-block { background: #0f172a; border-radius: 10px; padding: 16px; }
+  .schema-name { font-size: 0.75rem; font-weight: 700; color: #818cf8; margin-bottom: 10px; letter-spacing: .05em; }
+  .field { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #1e293b; font-size: 0.74rem; }
+  .field:last-child { border-bottom: none; }
+  .field-name { color: #e2e8f0; font-family: monospace; }
+  .field-type { color: #64748b; font-size: 0.68rem; }
+  .field-req { color: #f87171; font-size: 0.65rem; margin-left: 4px; }
+  .field-opt { color: #4ade80; font-size: 0.65rem; margin-left: 4px; }
+
+  /* ── Tech stack badges ── */
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid;
+  }
+  .badge.fe  { border-color: #38bdf8; color: #38bdf8; background: rgba(56,189,248,.08); }
+  .badge.be  { border-color: #4ade80; color: #4ade80; background: rgba(74,222,128,.08); }
+  .badge.db  { border-color: #fbbf24; color: #fbbf24; background: rgba(251,191,36,.08); }
+  .badge.ext { border-color: #818cf8; color: #818cf8; background: rgba(129,140,248,.08); }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid #1e293b; margin: 32px 0; }
+
+  /* ── Data flow arrow connector ── */
+  .connector {
+    text-align: center;
+    padding: 8px 0;
+    color: #475569;
+    font-size: 0.7rem;
+  }
+  .connector span { display: block; font-size: 1.3rem; line-height: 1; color: #334155; }
+
+  /* ── User journey ── */
+  .journey {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .journey-step {
+    flex: 1;
+    min-width: 180px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 16px 14px;
+    position: relative;
+  }
+  .journey-step + .journey-step {
+    margin-left: -1px;
+    border-left-color: transparent;
+    border-radius: 0 10px 10px 0;
+  }
+  .journey-step:first-child { border-radius: 10px 0 0 10px; }
+  .journey-step:last-child  { border-radius: 0 10px 10px 0; }
+  .step-num {
+    width: 24px; height: 24px;
+    background: #1e293b;
+    border: 1.5px solid #475569;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem; font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 10px;
+  }
+  .step-title { font-size: 0.82rem; font-weight: 600; color: #e2e8f0; margin-bottom: 6px; }
+  .step-actions { font-size: 0.72rem; color: #64748b; line-height: 1.6; }
+  .journey-arrow {
+    display: flex; align-items: center;
+    color: #334155;
+    font-size: 1rem;
+    padding: 0 6px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* ── Component tree ── */
+  .tree { font-size: 0.78rem; font-family: monospace; line-height: 1.9; color: #94a3b8; }
+  .tree .node-blue   { color: #38bdf8; }
+  .tree .node-violet { color: #818cf8; }
+  .tree .node-green  { color: #4ade80; }
+  .tree .node-amber  { color: #fbbf24; }
+  .tree .node-rose   { color: #f87171; }
+  .tree .note { color: #475569; font-size: 0.7rem; }
+
+  @media (max-width: 768px) {
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .schema-grid { grid-template-columns: 1fr; }
+    .journey { flex-direction: column; gap: 8px; }
+    .journey-step + .journey-step { margin-left: 0; border-left-color: #334155; border-radius: 10px; }
+    .journey-step:first-child, .journey-step:last-child { border-radius: 10px; }
+    .journey-arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Share My Itinerary</h1>
+<p class="subtitle">Full-Stack Travel Expense Tracker — Visual Architecture &amp; Flow</p>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — TECH STACK
+     ══════════════════════════════════════════ -->
+<div class="section-title">Tech Stack</div>
+<div class="card full accent-violet">
+  <div class="card-title">Technologies Used</div>
+  <div style="margin-bottom:12px;">
+    <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px;font-weight:600;">FRONTEND</div>
+    <div class="badges">
+      <span class="badge fe">Next.js 14 (App Router)</span>
+      <span class="badge fe">React 18</span>
+      <span class="badge fe">Tailwind CSS 3</span>
+      <span class="badge fe">Lucide React Icons</span>
+    </div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px;font-weight:600;">BACKEND</div>
+    <div class="badges">
+      <span class="badge be">Next.js API Routes</span>
+      <span class="badge be">Node.js ≥ 18</span>
+      <span class="badge be">Mongoose 8</span>
+    </div>
+  </div>
+  <div style="margin-bottom:12px;">
+    <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px;font-weight:600;">DATABASE</div>
+    <div class="badges">
+      <span class="badge db">MongoDB Atlas</span>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:0.72rem;color:#64748b;margin-bottom:8px;font-weight:600;">EXTERNAL APIs</div>
+    <div class="badges">
+      <span class="badge ext">Google Maps Places API</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — USER JOURNEY
+     ══════════════════════════════════════════ -->
+<div class="section-title">User Journey</div>
+<div class="card full accent-blue">
+  <div class="card-title">End-to-End User Flow</div>
+  <div style="display:flex;align-items:flex-start;gap:0;overflow-x:auto;padding-bottom:4px;">
+
+    <div class="journey-step">
+      <div class="step-num">1</div>
+      <div class="step-title">Dashboard</div>
+      <div class="step-actions">
+        Open app at /<br/>
+        See all trips<br/>
+        Click "New Trip"
+      </div>
+    </div>
+    <div class="journey-arrow">→</div>
+
+    <div class="journey-step">
+      <div class="step-num">2</div>
+      <div class="step-title">Create Trip</div>
+      <div class="step-actions">
+        /trips/new<br/>
+        Enter name, destination<br/>
+        Set dates &amp; currency<br/>
+        Submit form
+      </div>
+    </div>
+    <div class="journey-arrow">→</div>
+
+    <div class="journey-step">
+      <div class="step-num">3</div>
+      <div class="step-title">Trip Detail</div>
+      <div class="step-actions">
+        /trips/[id]<br/>
+        View summary totals<br/>
+        Add expenses<br/>
+        Filter by category
+      </div>
+    </div>
+    <div class="journey-arrow">→</div>
+
+    <div class="journey-step">
+      <div class="step-num">4</div>
+      <div class="step-title">Manage Expenses</div>
+      <div class="step-actions">
+        Fill expense form<br/>
+        Pick category &amp; location<br/>
+        Save / delete items
+      </div>
+    </div>
+    <div class="journey-arrow">→</div>
+
+    <div class="journey-step">
+      <div class="step-num">5</div>
+      <div class="step-title">Back to Dashboard</div>
+      <div class="step-actions">
+        "All Trips" link<br/>
+        View / delete trips<br/>
+        Start new journey
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — PAGE ROUTES
+     ══════════════════════════════════════════ -->
+<div class="section-title">Page Routes &amp; Features</div>
+<div class="three-col">
+
+  <div class="card accent-blue">
+    <div class="card-title">Dashboard</div>
+    <div class="page-block">
+      <div class="page-path">GET /</div>
+      <div class="page-name">app/page.js</div>
+      <ul>
+        <li>Trip card grid (1–3 cols)</li>
+        <li>Trip count display</li>
+        <li>Empty state + CTA</li>
+        <li>Delete trip (confirm)</li>
+        <li>"View Expenses" → trip detail</li>
+        <li>"New Trip" header button</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card accent-green">
+    <div class="card-title">New Trip</div>
+    <div class="page-block">
+      <div class="page-path">GET /trips/new</div>
+      <div class="page-name">app/trips/new/page.js</div>
+      <ul>
+        <li>Trip name (required)</li>
+        <li>Destination autocomplete</li>
+        <li>Start &amp; End dates</li>
+        <li>Currency selector (10 options)</li>
+        <li>Notes (optional)</li>
+        <li>Saves → redirects to detail</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card accent-violet">
+    <div class="card-title">Trip Detail</div>
+    <div class="page-block">
+      <div class="page-path">GET /trips/[id]</div>
+      <div class="page-name">app/trips/[id]/page.js</div>
+      <ul>
+        <li>Trip header &amp; date range</li>
+        <li>Currency summary totals</li>
+        <li>Add Expense form (toggle)</li>
+        <li>Category filter tabs (8)</li>
+        <li>Expense list with delete</li>
+        <li>Location autocomplete</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — DATA FLOW
+     ══════════════════════════════════════════ -->
+<div class="section-title">Data Flow (Request/Response)</div>
+<div class="card full accent-amber">
+  <div class="card-title">Client ↔ API ↔ Database</div>
+  <div class="flow">
+
+    <div class="flow-row">
+      <div class="flow-node blue">Browser (React)<small>useState + fetch()</small></div>
+    </div>
+    <div class="arrow down">↕</div>
+    <div style="text-align:center;font-size:0.68rem;color:#64748b;margin:-4px 0 4px;">HTTP JSON</div>
+    <div class="arrow down">↕</div>
+    <div class="flow-row" style="gap:12px;">
+      <div class="flow-node violet">API Routes<small>app/api/**/route.js</small></div>
+    </div>
+    <div class="arrow down">↕</div>
+    <div style="text-align:center;font-size:0.68rem;color:#64748b;margin:-4px 0 4px;">Mongoose ODM</div>
+    <div class="arrow down">↕</div>
+    <div class="flow-row">
+      <div class="flow-node amber">MongoDB Atlas<small>Trip &amp; Expense collections</small></div>
+    </div>
+
+  </div>
+  <div style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:220px;background:#0f172a;border-radius:10px;padding:14px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#38bdf8;margin-bottom:8px;">FETCH PATTERN (Client)</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:2;">
+        useEffect → fetch('/api/trips')<br/>
+        → setTrips(data)<br/>
+        → re-render with data
+      </div>
+    </div>
+    <div style="flex:1;min-width:220px;background:#0f172a;border-radius:10px;padding:14px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#4ade80;margin-bottom:8px;">CONNECTION PATTERN (Server)</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:2;">
+        lib/mongodb.js (singleton)<br/>
+        → cached at global scope<br/>
+        → reused across requests
+      </div>
+    </div>
+    <div style="flex:1;min-width:220px;background:#0f172a;border-radius:10px;padding:14px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#818cf8;margin-bottom:8px;">GOOGLE MAPS PATTERN</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:2;">
+        Script loaded in layout.js<br/>
+        → LocationAutocomplete.js<br/>
+        → Places Autocomplete API
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 5 — API ENDPOINTS
+     ══════════════════════════════════════════ -->
+<div class="section-title">API Endpoints</div>
+<div class="card full accent-green">
+  <div class="card-title">RESTful API Routes</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Route</th>
+        <th>Handler File</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="route">/api/trips</td>
+        <td class="desc">api/trips/route.js</td>
+        <td class="desc">List all trips</td>
+      </tr>
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="route">/api/trips</td>
+        <td class="desc">api/trips/route.js</td>
+        <td class="desc">Create new trip</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="route">/api/trips/[id]</td>
+        <td class="desc">api/trips/[id]/route.js</td>
+        <td class="desc">Get single trip by ID</td>
+      </tr>
+      <tr>
+        <td><span class="method put">PUT</span></td>
+        <td class="route">/api/trips/[id]</td>
+        <td class="desc">api/trips/[id]/route.js</td>
+        <td class="desc">Update trip details</td>
+      </tr>
+      <tr>
+        <td><span class="method delete">DELETE</span></td>
+        <td class="route">/api/trips/[id]</td>
+        <td class="desc">api/trips/[id]/route.js</td>
+        <td class="desc">Delete trip + cascade delete all its expenses</td>
+      </tr>
+      <tr>
+        <td><span class="method get">GET</span></td>
+        <td class="route">/api/trips/[id]/expenses</td>
+        <td class="desc">api/trips/[id]/expenses/route.js</td>
+        <td class="desc">List expenses for a trip</td>
+      </tr>
+      <tr>
+        <td><span class="method post">POST</span></td>
+        <td class="route">/api/trips/[id]/expenses</td>
+        <td class="desc">api/trips/[id]/expenses/route.js</td>
+        <td class="desc">Add expense to trip</td>
+      </tr>
+      <tr>
+        <td><span class="method delete">DELETE</span></td>
+        <td class="route">/api/expenses/[id]</td>
+        <td class="desc">api/expenses/[id]/route.js</td>
+        <td class="desc">Delete single expense by ID</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 6 — DATA MODELS
+     ══════════════════════════════════════════ -->
+<div class="section-title">Database Models</div>
+<div class="two-col">
+
+  <div class="card accent-amber">
+    <div class="card-title">Trip Schema</div>
+    <div class="schema-block">
+      <div class="schema-name">lib/models/Trip.js</div>
+      <div class="field"><span class="field-name">name</span> <span><span class="field-type">String</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">destination</span> <span><span class="field-type">String</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">startDate</span> <span><span class="field-type">Date</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">endDate</span> <span><span class="field-type">Date</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">currency</span> <span><span class="field-type">String</span><span class="field-opt">default: USD</span></span></div>
+      <div class="field"><span class="field-name">notes</span> <span><span class="field-type">String</span><span class="field-opt">optional</span></span></div>
+      <div class="field"><span class="field-name">createdAt</span> <span><span class="field-type">Date</span><span class="field-opt">auto</span></span></div>
+      <div class="field"><span class="field-name">updatedAt</span> <span><span class="field-type">Date</span><span class="field-opt">auto</span></span></div>
+    </div>
+  </div>
+
+  <div class="card accent-rose">
+    <div class="card-title">Expense Schema</div>
+    <div class="schema-block">
+      <div class="schema-name">lib/models/Expense.js</div>
+      <div class="field"><span class="field-name">tripId</span> <span><span class="field-type">ObjectId→Trip</span><span class="field-req">indexed</span></span></div>
+      <div class="field"><span class="field-name">description</span> <span><span class="field-type">String</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">amount</span> <span><span class="field-type">Number ≥ 0</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">currency</span> <span><span class="field-type">String</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">category</span> <span><span class="field-type">enum(7)</span><span class="field-req">required</span></span></div>
+      <div class="field"><span class="field-name">location</span> <span><span class="field-type">String</span><span class="field-opt">optional</span></span></div>
+      <div class="field"><span class="field-name">date</span> <span><span class="field-type">Date</span><span class="field-opt">default: now</span></span></div>
+      <div class="field"><span class="field-name">notes</span> <span><span class="field-type">String</span><span class="field-opt">optional</span></span></div>
+    </div>
+    <div style="margin-top:10px;padding:10px;background:#0f172a;border-radius:8px;">
+      <div style="font-size:0.68rem;color:#64748b;margin-bottom:6px;font-weight:600;">CATEGORIES (enum)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span style="font-size:0.7rem;color:#f87171;">🍽 Food</span>
+        <span style="font-size:0.7rem;color:#f87171;">🚌 Transport</span>
+        <span style="font-size:0.7rem;color:#f87171;">🏨 Accommodation</span>
+        <span style="font-size:0.7rem;color:#f87171;">🎭 Activities</span>
+        <span style="font-size:0.7rem;color:#f87171;">🛍 Shopping</span>
+        <span style="font-size:0.7rem;color:#f87171;">🏥 Health</span>
+        <span style="font-size:0.7rem;color:#f87171;">📦 Other</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 7 — COMPONENT TREE
+     ══════════════════════════════════════════ -->
+<div class="section-title">Component Tree</div>
+<div class="card full accent-violet">
+  <div class="card-title">React Component Hierarchy</div>
+  <div class="tree">
+    <span class="node-blue">RootLayout</span> <span class="note">(app/layout.js) — sticky header, Google Maps script</span><br/>
+    ├── <span class="node-blue">Header</span> <span class="note">— logo, "New Trip" nav button</span><br/>
+    └── <span class="note">&lt;children&gt;</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;│<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="node-green">Dashboard</span> <span class="note">(app/page.js)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp; └── <span class="node-amber">TripCard</span> <span class="note">× N — name, dest, dates, currency, notes, delete, view</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;│<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="node-green">NewTrip Page</span> <span class="note">(app/trips/new/page.js)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp; └── <span class="node-violet">LocationAutocomplete</span> <span class="note">— Google Places input (destination)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;│<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="node-green">TripDetail Page</span> <span class="note">(app/trips/[id]/page.js)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="node-amber">TripHeader</span> <span class="note">— name, destination, date range</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="node-amber">SummaryBar</span> <span class="note">— per-currency total with symbols</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="node-rose">ExpenseForm</span> <span class="note">— toggleable add-expense panel</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp; └── <span class="node-violet">LocationAutocomplete</span> <span class="note">— Google Places (expense location)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span class="node-rose">CategoryFilterTabs</span> <span class="note">— All + 7 category buttons</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span class="node-rose">ExpenseRow</span> <span class="note">× N — icon, desc, category, location, amount, delete ✕</span><br/>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 8 — FILE STRUCTURE
+     ══════════════════════════════════════════ -->
+<div class="section-title">File Structure</div>
+<div class="two-col">
+  <div class="card accent-blue">
+    <div class="card-title">App Directory</div>
+    <div style="font-family:monospace;font-size:0.74rem;line-height:2;color:#94a3b8;">
+      <span style="color:#38bdf8;">app/</span><br/>
+      ├── <span style="color:#4ade80;">layout.js</span> <span style="color:#475569;">← root layout + nav</span><br/>
+      ├── <span style="color:#4ade80;">page.js</span> <span style="color:#475569;">← dashboard</span><br/>
+      ├── <span style="color:#4ade80;">globals.css</span> <span style="color:#475569;">← tailwind + components</span><br/>
+      ├── <span style="color:#38bdf8;">trips/</span><br/>
+      │&nbsp;&nbsp; ├── <span style="color:#38bdf8;">new/</span><br/>
+      │&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#4ade80;">page.js</span> <span style="color:#475569;">← create form</span><br/>
+      │&nbsp;&nbsp; └── <span style="color:#38bdf8;">[id]/</span><br/>
+      │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#4ade80;">page.js</span> <span style="color:#475569;">← trip detail</span><br/>
+      └── <span style="color:#38bdf8;">api/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; ├── <span style="color:#38bdf8;">trips/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── <span style="color:#fbbf24;">route.js</span> <span style="color:#475569;">← GET/POST trips</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; └── <span style="color:#38bdf8;">[id]/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ├── <span style="color:#fbbf24;">route.js</span> <span style="color:#475569;">← GET/PUT/DELETE trip</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#38bdf8;">expenses/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#fbbf24;">route.js</span> <span style="color:#475569;">← GET/POST expenses</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#38bdf8;">expenses/[id]/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#fbbf24;">route.js</span> <span style="color:#475569;">← DELETE expense</span>
+    </div>
+  </div>
+
+  <div class="card accent-green">
+    <div class="card-title">Library &amp; Config</div>
+    <div style="font-family:monospace;font-size:0.74rem;line-height:2;color:#94a3b8;">
+      <span style="color:#4ade80;">components/</span><br/>
+      └── <span style="color:#818cf8;">LocationAutocomplete.js</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#475569;">← reusable Places input</span><br/>
+      <br/>
+      <span style="color:#4ade80;">lib/</span><br/>
+      ├── <span style="color:#fbbf24;">mongodb.js</span> <span style="color:#475569;">← singleton conn</span><br/>
+      └── <span style="color:#4ade80;">models/</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; ├── <span style="color:#fbbf24;">Trip.js</span> <span style="color:#475569;">← Mongoose schema</span><br/>
+      &nbsp;&nbsp;&nbsp;&nbsp; └── <span style="color:#fbbf24;">Expense.js</span> <span style="color:#475569;">← Mongoose schema</span><br/>
+      <br/>
+      <span style="color:#4ade80;">Config files</span><br/>
+      ├── <span style="color:#94a3b8;">package.json</span><br/>
+      ├── <span style="color:#94a3b8;">next.config.js</span><br/>
+      ├── <span style="color:#94a3b8;">tailwind.config.js</span><br/>
+      └── <span style="color:#94a3b8;">.env.local</span> <span style="color:#475569;">← MONGO + Maps keys</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- ══════════════════════════════════════════
+     SECTION 9 — STATE MANAGEMENT
+     ══════════════════════════════════════════ -->
+<div class="section-title">State Management</div>
+<div class="card full accent-rose">
+  <div class="card-title">Client-Side State (React useState)</div>
+  <div class="three-col" style="margin-bottom:0;">
+    <div style="background:#0f172a;border-radius:10px;padding:16px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#38bdf8;margin-bottom:10px;">Dashboard State</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:1.9;">
+        trips[] <span style="color:#475569;">← all trips</span><br/>
+        loading <span style="color:#475569;">← fetch status</span><br/>
+        error <span style="color:#475569;">← error msg</span>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:10px;padding:16px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#4ade80;margin-bottom:10px;">New Trip Form State</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:1.9;">
+        formData{} <span style="color:#475569;">← all fields</span><br/>
+        loading <span style="color:#475569;">← submit status</span><br/>
+        error <span style="color:#475569;">← validation</span>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:10px;padding:16px;">
+      <div style="font-size:0.7rem;font-weight:700;color:#818cf8;margin-bottom:10px;">Trip Detail State</div>
+      <div style="font-family:monospace;font-size:0.72rem;color:#94a3b8;line-height:1.9;">
+        trip{} <span style="color:#475569;">← trip data</span><br/>
+        expenses[] <span style="color:#475569;">← expense list</span><br/>
+        showForm <span style="color:#475569;">← toggle panel</span><br/>
+        selectedCategory <span style="color:#475569;">← filter</span><br/>
+        expenseForm{} <span style="color:#475569;">← form fields</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:48px;font-size:0.72rem;color:#475569;">
+  Generated for <strong style="color:#64748b;">Share My Itinerary</strong> — Full-Stack Travel Expense Tracker
+</div>
+
+</body>
+</html>

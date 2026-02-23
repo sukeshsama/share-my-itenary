@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+
+# Next.js build output
+.next
+out
+
+# Environment files (injected at runtime / build-arg)
+.env
+.env.local
+.env.*.local
+
+# Version control
+.git
+.gitignore
+
+# Editor & OS
+.DS_Store
+*.swp
+*.swo
+.vscode
+.idea
+
+# Docs & scripts
+README.md
+SETUP.md
+start-dev.sh
+visual-flow.html
+
+# Container config (not needed inside image)
+Dockerfile
+.dockerignore
+podman-compose.yml
