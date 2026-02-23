@@ -29,7 +29,20 @@
       "Bash(podman tag:*)",
       "Bash(podman images:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git commit:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git push:*)",
+      "Bash(gh release:*)",
+      "Bash(gh api:*)",
+      "Bash(git config:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/app/api/trips/route.js:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/app/api/trips/[id]/route.js:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/app/api/trips/[id]/expenses/route.js:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/app/api/expenses/[id]/route.js:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/app/layout.js:*)",
+      "Bash(/Users/sukeshsama/Downloads/share-my-itenary/middleware.js:*)"
     ]
   }
 }
